@@ -17,6 +17,8 @@ var SUPPORTED = [
 
 var TOOLTIP = undefined;
 try { TOOLTIP = BattleTooltips.prototype.showPokemonTooltip; } catch {}
+var TOOLTIPMOVE = undefined;
+try { TOOLTIPMOVE = BattleTooltips.prototype.showMoveTooltip; } catch {}
 if (TOOLTIP) {
   for (var format of SUPPORTED) {
     (function (f) {
@@ -253,5 +255,93 @@ if (TOOLTIP) {
       var val = tr(tr(2 * base + iv + tr(ev / 4)) * level / 100 + 5);
       return letsgo ? tr(val * 102 / 100) + 20 : val;
     }
+  }
+
+  BattleTooltips.prototype.showMoveTooltip = function (clientMove, serverMove, clientPokemon, serverPokemon) {
+    var original = TOOLTIPMOVE.apply(this, arguments);
+    if(clientMove.basePower == 0 ||clientMove.basePower == null || clientMove.basePower > undefined){
+      return original;
+    }
+    if(this.battle.sidesSwitched === true){
+      var enemy = this.battle.p1.active[0];
+      var me = this.battle.p2.active[0];
+    }
+    else{
+      var enemy = this.battle.p2.active[0];
+      var me = this.battle.p1.active[0];
+    }
+    var format = toID(this.battle.tier);
+    if (!format || !format.includes('random')) return original;
+
+
+    var speciesEnemy = Dex.species.get(enemy.speciesForme);
+    if (!speciesEnemy) return original;
+    var speciesMe = Dex.species.get(me.speciesForme);
+    if (!speciesMe) return original;
+
+    var gen = Number(format.charAt(3));
+    var letsgo = format.includes('letsgo');
+    var gameType = this.battle.gameType;
+
+    if (!['singles', 'doubles'].includes(gameType)) {
+      format = 'gen' + gen + 'randomdoublesbattle';
+    } else if (format.includes('monotype') || format.includes('unrated')) {
+      format = 'gen' + gen + 'randombattle';
+    }
+    if (!DATA[format]) return original;
+
+
+    // Enemy Stats
+    var dataEnemy = DATA[format][speciesEnemy.name === 'Zoroark' ? 0 : enemy.level];
+    if (!dataEnemy) return original;
+
+    var cosmetic = speciesEnemy.cosmeticFormes && speciesEnemy.cosmeticFormes.includes(speciesEnemy.name);
+    var idEnemy = toID((speciesEnemy.forme === 'Gmax' || cosmetic)
+      ? speciesEnemy.baseSpecies : speciesEnemy.battleOnly || speciesEnemy.name);
+    if (idEnemy.startsWith('pikachu')) idEnemy = idEnemy.endsWith('gmax') ? 'pikachugmax' : 'pikachu';
+    var forme = cosmetic ? speciesEnemy.baseSpecies : enemy.speciesForme;
+    if (forme.startsWith('Pikachu')) forme = forme.endsWith('Gmax') ? 'Pikachu-Gmax' : 'Pikachu';
+
+    dataEnemy = dataEnemy[idEnemy];
+    if (!dataEnemy) return original;
+
+
+
+
+
+    // Me
+    //var statsEnemy = getStats(gen, gameType, letsgo, speciesEnemy, dataEnemy[0], null , this.getPokemonTypes(enemy),enemy);
+
+    var dataMe = DATA[format][speciesMe.name === 'Zoroark' ? 0 : me.level];
+    if (!dataMe) return original;
+
+    var cosmetic = speciesMe.cosmeticFormes && speciesMe.cosmeticFormes.includes(speciesMe.name);
+    var idMe = toID((speciesMe.forme === 'Gmax' || cosmetic)
+      ? speciesMe.baseSpecies : speciesMe.battleOnly || speciesMe.name);
+    if (idMe.startsWith('pikachu')) idMe = idMe.endsWith('gmax') ? 'pikachugmax' : 'pikachu';
+    var forme = cosmetic ? speciesMe.baseSpecies : me.speciesForme;
+    if (forme.startsWith('Pikachu')) forme = forme.endsWith('Gmax') ? 'Pikachu-Gmax' : 'Pikachu';
+    dataMe = dataMe[idMe];
+    if (!dataMe) return original;
+
+    console.debug(dataMe);
+    console.debug(dataEnemy);
+
+    var buf = original;
+    /*
+    var statsMe = getStats(gen, gameType, letsgo, speciesMe, dataMe[0], null , this.getPokemonTypes(me),me);
+    var buf = original;
+    var bp = clientMove.basePower;
+    buf += '<div style="border-top: 1px solid #888; background: #dedede">';
+    if(serverMove === 'maxmove'){
+      clientMove.basePower = clientMove.maxMove.basePower;
+      buf += getItemModi(statsMe,statsEnemy,dataEnemy, dataMe, serverPokemon, me, enemy, this.getPokemonTypes(me), this.getPokemonTypes(enemy),clientMove,this.battle, true)
+      clientMove.basePower = bp;
+    }
+    else{
+      buf += getItemModi(statsMe,statsEnemy,dataEnemy, dataMe, serverPokemon, me, enemy, this.getPokemonTypes(me), this.getPokemonTypes(enemy),clientMove,this.battle, false)
+    }
+    */
+    return buf;
   }
 }
