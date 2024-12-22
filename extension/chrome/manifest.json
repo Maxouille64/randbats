@@ -2,21 +2,28 @@
   "manifest_version": 3,
   "name": "Pokémon Showdown Randbats Tooltip",
   "description": "Enhanced tooltip functionality for Pokémon Showdown Random Battle formats.",
-  "version": "1.5.5",
+  "version": "1.5.5.1",
   "icons": {
     "16": "/16x16.png",
     "32": "/32x32.png",
     "48": "/48x48.png",
     "128": "/128x128.png"
   },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
   "web_accessible_resources": [{
     "matches": ["*://play.pokemonshowdown.com/*","*://replay.pokemonshowdown.com/*", "*://*.psim.us/*"],
-    "resources": ["/index.js","/data.js","/calc.js"]
+    "resources": ["/index.js","/instacalc.js","/data.js","/calc.js","/typechart.js"]
   }],
   "content_scripts": [
     {
       "matches": ["*://play.pokemonshowdown.com/*","*://replay.pokemonshowdown.com/*", "*://*.psim.us/*"],
       "js": ["/shim.js"]
     }
+  ],
+  "permissions": [
+    "storage"
   ]
 }

@@ -9,3 +9,4 @@ function load(file) {
 load("data.js");
 load("calc.js");
 load("index.js");
+load("instacalc.js");

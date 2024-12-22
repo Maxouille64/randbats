@@ -9,7 +9,7 @@
     "48": "/48x48.png",
     "128": "/128x128.png"
   },
-  "web_accessible_resources": ["/index.js"],
+  "web_accessible_resources": ["/index.js","/instacalc.js","/data.js","/calc.js"],
   "content_scripts": [
     {
       "matches": ["*://play.pokemonshowdown.com/*","*://replay.pokemonshowdown.com/*", "*://*.psim.us/*"],
