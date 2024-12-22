@@ -10,14 +10,13 @@
     "128": "/128x128.png"
   },
   "web_accessible_resources": [{
-    "matches": ["*://*.pokemonshowdown.com/*", "*://*.psim.us/*"],
-    "resources": ["/index.js"]
+    "matches": ["*://play.pokemonshowdown.com/*","*://replay.pokemonshowdown.com/*", "*://*.psim.us/*"],
+    "resources": ["/index.js","/data.js","/calc.js"]
   }],
   "content_scripts": [
     {
-      "matches": ["*://*.pokemonshowdown.com/*", "*://*.psim.us/*"],
+      "matches": ["*://play.pokemonshowdown.com/*","*://replay.pokemonshowdown.com/*", "*://*.psim.us/*"],
       "js": ["/shim.js"]
     }
   ]
 }
-

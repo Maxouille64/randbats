@@ -1,3 +1,11 @@
-var script = document.createElement('script');
-script.src = chrome.runtime.getURL('/index.js');
-document.body.appendChild(script);
+function load(file) {
+	let elm = document.createElement("script");
+	elm.src = chrome.runtime.getURL("/" + file);
+	document.body.appendChild(elm);
+  console.debug(file);
+  return;
+};
+
+load("data.js");
+load("calc.js");
+load("index.js");
